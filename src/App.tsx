@@ -18,11 +18,25 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h1>Hello Nodepod</h1>
-      <p>Virtual Server Url: {serverUrl}</p>
-      <iframe src={serverUrl}></iframe>
-    </>
+    <div
+      style={{
+        position: "fixed",
+        inset: "0",
+      }}
+    >
+      <div>
+        <h1>Hello Nodepod</h1>
+        <p>Virtual Server Url: {serverUrl}</p>
+      </div>
+
+      <iframe
+        src={serverUrl}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+      ></iframe>
+    </div>
   );
 }
 
