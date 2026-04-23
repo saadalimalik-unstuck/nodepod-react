@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { initNodepod, runCommand } from "./services/nodepod";
+import { createReactApp } from "./utils/nodepod/create-react-app";
 
 function App() {
   const [serverUrl, setServerUrl] = useState<string | null>(null);
@@ -9,8 +10,7 @@ function App() {
     await initNodepod({
       onServerReady: setServerUrl,
     });
-    await runCommand("npm", ["install", "express"]);
-    await runCommand("node", ["index.js"]);
+    await createReactApp();
   };
 
   useEffect(() => {

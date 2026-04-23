@@ -5,7 +5,7 @@ const app = express();
 
 app.get('/', (req, res) => {
     // res.send('Hello from server!');
-    res.sendFile('/home/index.html');
+    res.sendFile('/app/index.html');
 });
 
 app.listen(3000, () => {

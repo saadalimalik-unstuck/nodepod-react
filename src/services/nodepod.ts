@@ -7,11 +7,11 @@ export async function initNodepod(options?: {
   onServerReady: (url: string) => void;
 }) {
   pod = await Nodepod.boot({
-    workdir: "/home",
-    files: {
-      "/home/index.js": serverFile,
-      "/home/index.html": htmlFile,
-    },
+    workdir: "/app",
+    /* files: {
+      "/app/index.js": serverFile,
+      "/app/index.html": htmlFile,
+    }, */
     allowedFetchDomains: null,
     onServerReady: (port, url) => {
       console.log(`Server ready on port: ${port}, url: ${url}`);
@@ -25,7 +25,11 @@ export async function initNodepod(options?: {
 export async function runCommand(command: string, args: string[] = []) {
   if (!pod) throw new Error("No pod instance initialized!");
 
-  const proc = await pod.spawn(command, args);
+  const hasRootPath = args.some((arg) => arg.startsWith("/"));
+
+  const proc = await pod.spawn(command, args, {
+    cwd: hasRootPath ? "/" : pod.cwd,
+  });
   logProcessData(proc);
   await proc.completion;
 }
