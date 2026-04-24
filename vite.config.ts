@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import nodepod from "@scelar/nodepod/vite";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), nodepod()],
+  plugins: [react(), tailwindcss(), nodepod()],
   server: {
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin",
