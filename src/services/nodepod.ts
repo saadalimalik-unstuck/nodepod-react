@@ -41,65 +41,17 @@ export async function mountFiles(files: Record<string, string>) {
   const writeFilesPromises: Promise<void>[] = [];
 
   for (const [path, content] of Object.entries(files)) {
-    writeFilesPromises.push(pod.fs.writeFile(path, content)); 
+    writeFilesPromises.push(pod.fs.writeFile(path, content));
   }
 
   await Promise.all(writeFilesPromises);
 }
 
-// React Router's BrowserRouter reads window.location.pathname, which inside a nodepod
-// iframe is "/__virtual__/podXXXX/5173" — no app routes match that prefix.
-// Fix: inject a tiny script into index.html that detects the virtual basename and
-// exposes it as window.__NODEPOD_BASENAME__, then patch BrowserRouter/createBrowserRouter
-// usages to pass it as the basename option.
-async function patchReactRouter() {
-  if (!pod) return;
-
-  // 1. Inject basename detection script into index.html
-  try {
-    let html = await pod.fs.readFile('/app/index.html', 'utf-8');
-    if (!html.includes('__NODEPOD_BASENAME__')) {
-      const script = `  <script>window.__NODEPOD_BASENAME__=(function(){var m=location.pathname.match(/^\\/__virtual__\\/[^/]+\\/\\d+/);return m?m[0]:'/';})();</script>`;
-      html = html.replace('<head>', `<head>\n${script}`);
-      await pod.fs.writeFile('/app/index.html', html);
-    }
-  } catch { /* index.html missing — skip */ }
-
-  // 2. Patch BrowserRouter / createBrowserRouter in common entry files
-  const candidates = ['/app/src/main.tsx', '/app/src/main.ts', '/app/src/App.tsx'];
-  for (const file of candidates) {
-    try {
-      let content = await pod.fs.readFile(file, 'utf-8');
-      let changed = false;
-
-      // <BrowserRouter> → <BrowserRouter basename={window.__NODEPOD_BASENAME__}>
-      if (content.includes('BrowserRouter') && !content.includes('__NODEPOD_BASENAME__')) {
-        content = content.replace(/<BrowserRouter>/g, '<BrowserRouter basename={window.__NODEPOD_BASENAME__}>');
-        changed = true;
-      }
-
-      // createBrowserRouter(routes) → createBrowserRouter(routes, { basename: ... })
-      if (content.includes('createBrowserRouter') && !content.includes('__NODEPOD_BASENAME__')) {
-        content = content.replace(
-          /createBrowserRouter\((\[[^\]]*\]|\w+)\s*\)/g,
-          'createBrowserRouter($1, { basename: window.__NODEPOD_BASENAME__ })'
-        );
-        changed = true;
-      }
-
-      if (changed) await pod.fs.writeFile(file, content);
-    } catch { /* file missing — skip */ }
-  }
-}
-
 export async function startDevServer() {
   if (!pod) throw new Error("No pod instance initialized!");
 
-  await runCommand('npm', ['install']);
-
-  await patchReactRouter();
-
-  await runCommand('npm', ['run', 'dev']);
+  await runCommand("npm", ["install"]);
+  await runCommand("npm", ["run", "dev"]);
 }
 
 export function logProcessData(proc: NodepodProcess) {
