@@ -9,10 +9,10 @@ export async function initNodepod(options?: {
   pod = await Nodepod.boot({
     watermark: false,
     workdir: "/app",
-    /* files: {
-      "/app/index.js": serverFile,
-      "/app/index.html": htmlFile,
-    }, */
+    // files: {
+    //   "/app/index.js": serverFile,
+    //   "/app/index.html": htmlFile,
+    // },
     allowedFetchDomains: null,
     onServerReady: (port, url) => {
       console.log(`Server ready on port: ${port}, url: ${url}`);
@@ -54,6 +54,26 @@ export async function startDevServer() {
   await runCommand("npm", ["run", "dev"]);
 }
 
+export async function getFileTree(dir = '/', ignore = []) {
+  if (!pod) throw new Error("No pod instance initialized!");
+
+  const entries = await pod.fs.readdir(dir);
+  let results: any[] = [];
+
+  for (const name of entries) {
+    if (ignore.some(item => name.includes(item))) continue;
+
+    const path = `${dir === '/' ? '' : dir}/${name}`;
+    const stats = await pod.fs.stat(path);
+
+    if (stats.isDirectory) {
+      results = results.concat(await getFileTree(path));
+    } else {
+      results.push(path);
+    }
+  }
+  return results;
+}
 export function logProcessData(proc: NodepodProcess) {
   proc.on("output", (text) => console.log("[Process output]", text)); // stdout
   proc.on("error", (text) => console.log("[Process error]", text)); // stderr
