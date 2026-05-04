@@ -26,8 +26,10 @@ function App() {
             {isPodReady && (
                 <CodeEditor key={serverUrl} previewUrl={serverUrl} />
             )}
-            {serverUrl && <Preview previewUrl={serverUrl} />}
-            <ToastContainer position="bottom-right" limit={5} />
+            {serverUrl && (
+                <Preview previewUrl={serverUrl} onUrlChange={setServerUrl} />
+            )}
+            <ToastContainer position="bottom-right" limit={5} theme="dark" />
         </div>
     );
 }

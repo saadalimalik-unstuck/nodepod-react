@@ -102,7 +102,7 @@ export default function FileTree({
 
     return (
         <div className="flex flex-col min-w-60 overflow-x-auto shadow-md border-r border-black/10 relative z-10">
-            <div className="bg-white/10 px-2 py-2 flex items-center justify-between">
+            <div className="bg-stone-700 px-2 py-2 flex items-center justify-between">
                 <div>
                     <h1 className="text-xs">Project Name</h1>
                 </div>

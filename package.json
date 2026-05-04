@@ -13,6 +13,7 @@
     "@monaco-editor/react": "^4.8.0-rc.3",
     "@scelar/nodepod": "^1.8.2",
     "@tailwindcss/vite": "^4.2.4",
+    "ansi-to-html": "^0.7.2",
     "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

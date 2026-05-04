@@ -86,7 +86,7 @@ export default function CodeEditor({ previewUrl }: Props) {
 
             {openedFile && (
                 <div>
-                    <div className="flex justify-between items-center px-4 py-1 bg-white/10">
+                    <div className="flex justify-between items-center px-4 py-1 bg-stone-700">
                         <small>{openedFile}</small>
 
                         <button
